@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Form & To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .required {
+      color: red;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .todo-section {
+      margin-top: 40px;
+    }
+    .todo-input {
+      display: flex;
+      gap: 10px;
+    }
+    #taskList {
+      list-style: none;
+      padding: 0;
+    }
+    #taskList li {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      background: #e9e9e9;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: green;
+    }
+    .actions button {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contact Form Section -->
+  <div class="container">
+    <form id="contactForm">
+      <h2>Contact Form</h2>
+
+      <div class="form-group">
+        <label for="name">Full Name:<span class="required">*</span></label>
+        <input type="text" id="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="fatherName">Father's Name:<span class="required">*</span></label>
+        <input type="text" id="fatherName" required />
+      </div>
+
+      <div class="form-group">
+        <label>Gender:<span class="required">*</span></label>
+        <div class="gender-group">
+          <label><input type="radio" name="gender" value="Male" required /> Male</label>
+          <label><input type="radio" name="gender" value="Female" required /> Female</label>
+          <label><input type="radio" name="gender" value="Other" required /> Other</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="education">Education:<span class="required">*</span></label>
+        <select id="education" required>
+          <option value="">Select your qualification</option>
+          <option value="10th">10th</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Degree">Degree</option>
+          <option value="BTech">BTech</option>
+          <option value="MBA">MBA</option>
+          <option value="MTech">MTech</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:<span class="required">*</span></label>
+        <input type="email" id="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="mobile">Mobile Number:<span class="required">*</span></label>
+        <input type="text" id="mobile" required />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address:<span class="required">*</span></label>
+        <textarea id="address" rows="2" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message:<span class="required">*</span></label>
+        <textarea id="message" rows="3" required></textarea>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- To-Do List Section -->
+  <div class="container todo-section">
+    <h2>My To-Do List</h2>
+    <div class="todo-input">
+      <input type="text" id="taskInput" placeholder="Enter a new task" />
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const fatherName = document.getElementById("fatherName").value.trim();
+      const gender = document.querySelector('input[name="gender"]:checked');
+      const education = document.getElementById("education").value;
+      const email = document.getElementById("email").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      const mobileRegex = /^[0-9]{10}$/;
+
+      if (!name || !fatherName || !gender || !education || !email || !mobile || !address || !message) {
+        alert("Enter all the required fields");
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      if (!mobileRegex.test(mobile)) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+      }
+
+      // Save form data to local storage
+      const formData = {
+        name,
+        fatherName,
+        gender: gender.value,
+        education,
+        email,
+        mobile,
+        address,
+        message
+      };
+      localStorage.setItem("formData", JSON.stringify(formData));
+
+      window.location.href = "success.html";
+    });
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const taskText = input.value.trim();
+
+      if (taskText === "") {
+        alert("Please enter a task.");
+        return;
+      }
+
+      const li = document.createElement("li");
+      const span = document.createElement("span");
+      span.textContent = taskText;
+
+      const actionsDiv = document.createElement("div");
+      actionsDiv.classList.add("actions");
+
+      const completeBtn = document.createElement("button");
+      completeBtn.textContent = "Complete";
+      completeBtn.classList.add("complete");
+      completeBtn.onclick = () => {
+        li.classList.toggle("completed");
+      };
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.classList.add("delete");
+      deleteBtn.onclick = () => {
+        li.remove();
+      };
+
+      actionsDiv.appendChild(completeBtn);
+      actionsDiv.appendChild(deleteBtn);
+
+      li.appendChild(span);
+      li.appendChild(actionsDiv);
+
+      document.getElementById("taskList").appendChild(li);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
